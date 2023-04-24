@@ -318,6 +318,9 @@ def main(args):
             checkpoint["scaler"] = scaler.state_dict()
         utils.save_on_master(checkpoint, os.path.join(args.output_dir, f"model_{epoch}.pth"))
         utils.save_on_master(checkpoint, os.path.join(args.output_dir, "checkpoint.pth"))
+        graph = torch.fx.Tracer().trace(model_without_ddp)
+        traced = torch.fx.GraphModule(model_without_ddp, graph)
+        torch.save(traced, f"model_fx_{epoch}.pt")
     total_time = time.time() - start_time
     total_time_str = str(datetime.timedelta(seconds=int(total_time)))
     print(f"Training time {total_time_str}")
