@@ -41,3 +41,18 @@ torchrun --nproc_per_node=8 train.py --dataset coco -b 4 --model deeplabv3_mobil
 ```
 torchrun --nproc_per_node=8 train.py --dataset coco -b 4 --model lraspp_mobilenet_v3_large --wd 0.000001 --weights-backbone MobileNet_V3_Large_Weights.IMAGENET1K_V1
 ```
+# NetsPresso Compress Tutorial
+## Step 1.  train model
+Support models: fcn_resnet50, fcn_resnet101
+```
+torchrun --nproc_per_node=8 train.py --lr 0.02 --dataset coco -b 4 --model fcn_resnet50 --aux-loss --weights-backbone ResNet50_Weights.IMAGENET1K_V1
+```
+
+## Step 2. compress the model
+Visit [netspresso.ai](https://netspresso.ai/) and compress the model. You can get step by step guide from [here](https://docs.netspresso.ai/docs/mc-step1-prepare-model).
+
+## Step 3. fine-tune the model
+You need to set the compressed model path using `--model` and use `--npmc-mode` to train the compressed model.
+```
+torchrun --nproc_per_node=8 train.py --lr 0.002 --dataset coco -b 4 --model path_to_compressed_model_file --aux-loss --npmc-mode
+```
