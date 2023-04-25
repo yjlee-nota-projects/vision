@@ -6,15 +6,27 @@ training and evaluation scripts to quickly bootstrap research.
 
 All models have been trained on 8x V100 GPUs.
 
+* Requirements
+```bash 
+pip install torch==1.12.1+cu113 torchvision==0.13.1+cu113 torchaudio==0.12.1 --extra-index-url https://download.pytorch.org/whl/cu113
+pip install pycocotools
+```
+
+if you get an gcc error, please run below command
+```bash
+apt-get install build-essential
+```
+
 You must modify the following flags:
 
 `--data-path=/path/to/dataset`
 
 `--nproc_per_node=<number_of_gpus_available>`
 
+
 ## fcn_resnet50
 ```
-torchrun --nproc_per_node=8 train.py --lr 0.02 --dataset coco -b 4 --model fcn_resnet50 --aux-loss --weights-backbone ResNet50_Weights.IMAGENET1K_V1
+torchrun --nproc_per_node= train.py --lr 0.02 --dataset coco -b 4 --model fcn_resnet50 --aux-loss --weights-backbone ResNet50_Weights.IMAGENET1K_V1
 ```
 
 ## fcn_resnet101
@@ -42,10 +54,17 @@ torchrun --nproc_per_node=8 train.py --dataset coco -b 4 --model deeplabv3_mobil
 torchrun --nproc_per_node=8 train.py --dataset coco -b 4 --model lraspp_mobilenet_v3_large --wd 0.000001 --weights-backbone MobileNet_V3_Large_Weights.IMAGENET1K_V1
 ```
 # NetsPresso Compress Tutorial
-## Step 1.  train model
+## Step 1.  get model - train the model or export the model
+You can get the model by training the model from scratch, or exporting the pre-trained model
+### train the model
 Support models: fcn_resnet50, fcn_resnet101
 ```
 torchrun --nproc_per_node=8 train.py --lr 0.02 --dataset coco -b 4 --model fcn_resnet50 --aux-loss --weights-backbone ResNet50_Weights.IMAGENET1K_V1
+```
+### export the model
+Support models: fcn_resnet50, fcn_resnet101
+```
+torchrun --nproc_per_node=8 train.py --lr 0.02 --dataset coco -b 4 --model fcn_resnet50 --aux-loss --dataset coco
 ```
 
 ## Step 2. compress the model
